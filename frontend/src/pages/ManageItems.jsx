@@ -19,7 +19,7 @@ function ManageItemsPage() {
   };
 
   return (
-    <div className="p-8 space-y-6 bg-blue-100 min-h-screen">
+    <div className="p-8 space-y-6 bg-blue-50 min-h-screen">
       {/* Header */}
       <h1 className="text-3xl font-bold text-blue-900 text-center mb-6">
         Manage Items
@@ -83,22 +83,28 @@ function ManageItemsPage() {
           </div>
 
           {/* Categories */}
-          <div className="flex flex-col items-center">
-            <label
-              htmlFor="categories"
-              className="block text-lg font-medium text-gray-700"
-            >
-              Categories
-            </label>
-            <input
-              type="text"
-              id="categories"
-              name="categories"
-              onChange={handleChange}
-              className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
-              required
-            />
-          </div>
+<div className="flex flex-col items-center">
+  <label
+    htmlFor="categories"
+    className="block text-lg font-medium text-gray-700"
+  >
+    Categories
+  </label>
+  <select
+    id="categories"
+    name="category"
+    onChange={handleChange}
+    className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
+    required
+  >
+    <option value="" disabled selected>
+      Select a category
+    </option>
+    <option value="Men">Men</option>
+    <option value="Women">Women</option>
+  </select>
+</div>
+
         </div>
 
         {/* Add Button */}

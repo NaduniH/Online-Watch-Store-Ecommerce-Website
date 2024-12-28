@@ -21,7 +21,7 @@ function ViewOrdersPage() {
   ]);
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-8 space-y-6 bg-blue-50">
       <h1 className="text-3xl font-bold text-blue-900 text-center">
         View Orders
       </h1>
