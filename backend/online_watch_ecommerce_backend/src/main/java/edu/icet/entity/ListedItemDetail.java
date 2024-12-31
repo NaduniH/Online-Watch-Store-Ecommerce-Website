@@ -14,11 +14,14 @@ import lombok.ToString;
 public class ListedItemDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer detailId;
 
     @Column(name = "item_code",unique = true)
     private String itemCode;
+
+    private String itemName;
+
 
     @Column(nullable = false)
     private Double itemPrice;

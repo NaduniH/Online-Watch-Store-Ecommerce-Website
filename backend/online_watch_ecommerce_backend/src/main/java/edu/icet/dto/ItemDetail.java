@@ -12,6 +12,7 @@ import lombok.ToString;
 public class ItemDetail {
 
     private Integer detailId;
+    private String itemName;
     private String itemCode;
     private Double itemPrice;
     private String itemDescription;

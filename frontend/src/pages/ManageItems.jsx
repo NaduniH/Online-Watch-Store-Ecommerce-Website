@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 
 function ManageItemsPage() {
-  const [items, setItems] = useState([
-    {
-      item_id: "U001",
-      item_name: "Surveyor",
-      price: "3000.00",
-      category: "Mens",
-    },
-  ]);
+  
+
+  const [form, setForm] = useState({
+    itemCode: "",
+    itemName: "",
+    price: "",
+    category: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,6 +16,60 @@ function ManageItemsPage() {
       ...form,
       [name]: value,
     });
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    return isValid;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Ensure form validation passes before sending the request
+    if (validateForm()) {
+      // Create the product object matching the backend structure
+      const item = {
+        itemCode: form.itemCode,
+        itemCategory: form.category,
+        inStock: true, // Hardcoded, can be replaced with form input if needed
+        isVisible: true, // Hardcoded, can be replaced with form input if needed
+        quantity: "100",
+        entUser: "admin", // Hardcoded, can be replaced with logged-in user
+        entDate: new Date().toISOString(), // Auto-generate current date
+        itemDetail: {
+          itemName: form.itemName, // Assuming `itemName` is a state variable for item name
+          itemPrice: form.price, // Assuming `price` is a state variable for item price
+          itemDescription: "description", // Assuming `description` is a state variable
+          itemImgUrl: "imageUrl",
+        },
+      };
+
+      // Send the POST request to the backend
+      fetch("http://localhost:8080/item/addItem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item),
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("Product Successfully Added!");
+            // Clear form fields and reset state
+            // setItemCode("");
+            // setItemCategory("");
+            // setQuantity("");
+            // setImageUrl("");
+            // setPrice("");
+            // setDescription("");
+            // setErrors({});
+          } else {
+            alert("Failed to add product. Please try again.");
+          }
+        })
+        .catch((error) => {
+          alert("Error: " + error.message);
+        });
+    }
   };
 
   return (
@@ -26,20 +80,24 @@ function ManageItemsPage() {
       </h1>
 
       {/* Form Section */}
-      <div className="space-y-4 flex flex-col items-center">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 flex flex-col items-center"
+      >
         <div className="grid grid-cols-2 gap-4 w-1/2">
-          {/* Item ID */}
+          {/* Item Code */}
           <div className="flex flex-col items-center">
             <label
-              htmlFor="item_id"
+              htmlFor="itemCode"
               className="block text-lg font-medium text-gray-700"
             >
-              Item ID
+              Item Code
             </label>
             <input
               type="text"
-              id="item_id"
-              name="item_id"
+              id="itemCode"
+              name="itemCode"
+              value={form.itemCode}
               onChange={handleChange}
               className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
               required
@@ -49,15 +107,16 @@ function ManageItemsPage() {
           {/* Item Name */}
           <div className="flex flex-col items-center">
             <label
-              htmlFor="item_name"
+              htmlFor="itemName"
               className="block text-lg font-medium text-gray-700"
             >
               Item Name
             </label>
             <input
               type="text"
-              id="item_name"
-              name="item_name"
+              id="itemName"
+              name="itemName"
+              value={form.itemName}
               onChange={handleChange}
               className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
               required
@@ -76,6 +135,7 @@ function ManageItemsPage() {
               type="text"
               id="price"
               name="price"
+              value={form.price}
               onChange={handleChange}
               className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
               required
@@ -83,28 +143,28 @@ function ManageItemsPage() {
           </div>
 
           {/* Categories */}
-<div className="flex flex-col items-center">
-  <label
-    htmlFor="categories"
-    className="block text-lg font-medium text-gray-700"
-  >
-    Categories
-  </label>
-  <select
-    id="categories"
-    name="category"
-    onChange={handleChange}
-    className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
-    required
-  >
-    <option value="" disabled selected>
-      Select a category
-    </option>
-    <option value="Men">Men</option>
-    <option value="Women">Women</option>
-  </select>
-</div>
-
+          <div className="flex flex-col items-center">
+            <label
+              htmlFor="category"
+              className="block text-lg font-medium text-gray-700"
+            >
+              Categories
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
+              required
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+            </select>
+          </div>
         </div>
 
         {/* Add Button */}
@@ -116,13 +176,15 @@ function ManageItemsPage() {
             Add
           </button>
         </div>
-      </div>
+      </form>
 
       {/* Table Section */}
       <table className="min-w-full mt-8 border-collapse border border-gray-300">
         <thead className="bg-black text-white">
           <tr>
-            <th className="px-6 py-3 text-left text-lg font-medium">Item ID</th>
+            <th className="px-6 py-3 text-left text-lg font-medium">
+              Item Code
+            </th>
             <th className="px-6 py-3 text-left text-lg font-medium">
               Item Name
             </th>
@@ -135,7 +197,7 @@ function ManageItemsPage() {
           </tr>
         </thead>
         <tbody className="bg-white">
-          {items.map((item, index) => (
+          {/* {items.map((item, index) => (
             <tr
               key={index}
               className="border-t border-gray-300 hover:bg-gray-100"
@@ -155,7 +217,7 @@ function ManageItemsPage() {
                 </button>
               </td>
             </tr>
-          ))}
+          ))} */}
         </tbody>
       </table>
     </div>

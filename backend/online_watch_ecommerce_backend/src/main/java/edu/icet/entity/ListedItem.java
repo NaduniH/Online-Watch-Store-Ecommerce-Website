@@ -14,7 +14,7 @@ import java.util.Date;
 public class ListedItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemId;
 
     @Column(unique = true, nullable = false)
