@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import SurveyorImg from "../assets/images/Mens/Surveyor.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function PlaceOrderForm() {
+  const location = useLocation();
+  const watch = location.state;
   // State to track quantity and total price
-  const [quantity, setQuantity] = useState(2);
-  const price = 3000;
+  const [quantity, setQuantity] = useState(1);
+  // const price = 3000;
   const navigate = useNavigate();
 
   const handleOrder = () => {
     navigate("/payment", {
-      state: { quantity, price, total: quantity * price },
+      state: {
+        quantity,
+        itemPrice,
+        total: quantity * watch.itemDetail.itemPrice,
+      },
     });
   };
 
@@ -41,11 +47,15 @@ function PlaceOrderForm() {
         <div className="flex-1 p-6 bg-purple-100 rounded-lg shadow-md">
           <div className="flex items-center justify-between mb-6">
             <span className="text-lg font-medium">Item Name</span>
-            <h2 className="text-2xl font-semibold text-gray-800">Surveyor</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {watch.itemDetail.itemName}
+            </h2>
           </div>
           <div className="flex items-center justify-between mb-6">
             <span className="text-lg font-medium">Price</span>
-            <p className="text-xl text-gray-600 font-medium">RS. {price}/=</p>
+            <p className="text-xl text-gray-600 font-medium">
+              RS. {watch.itemDetail.itemPrice}/=
+            </p>
           </div>
 
           {/* Quantity Controls */}
@@ -72,7 +82,7 @@ function PlaceOrderForm() {
           <div className="flex items-center justify-between mb-6">
             <span className="text-lg font-medium">Total Price</span>
             <span className="text-lg font-semibold">
-              RS. {quantity * price}/=
+              RS. {quantity * watch.itemDetail.itemPrice}/=
             </span>
           </div>
 
