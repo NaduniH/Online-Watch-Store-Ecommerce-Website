@@ -3,15 +3,15 @@ import React, { useState } from "react";
 function ViewOrdersPage() {
   const [items, setItems] = useState([
     {
-      userId: "1",
+      customerId: "1",
       itemId: "101",
-      userName: "John Doe",
+      name: "John Doe",
       itemName: "Watch A",
       qty: 2,
       price: "Rs.3000.00",
     },
     {
-      userId: "2",
+      customerId: "2",
       itemId: "102",
       userName: "Jane Smith",
       itemName: "Watch B",
@@ -32,7 +32,7 @@ function ViewOrdersPage() {
               scope="col"
               className="px-6 py-3 text-left text-lg font-medium text-white tracking-wider"
             >
-              User ID
+              Customer ID
             </th>
             <th
               scope="col"
@@ -44,7 +44,7 @@ function ViewOrdersPage() {
               scope="col"
               className="px-6 py-3 text-left text-lg font-medium text-white tracking-wider"
             >
-              User Name
+              Customer Name
             </th>
             <th
               scope="col"

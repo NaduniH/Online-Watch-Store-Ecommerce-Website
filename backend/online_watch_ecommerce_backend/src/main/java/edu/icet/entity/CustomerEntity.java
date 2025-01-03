@@ -13,24 +13,21 @@ import lombok.ToString;
 @Entity
 @Table(name = "Customer")
 public class CustomerEntity {
+
     @Id
-    @Column(name="customerId",length = 45)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer customerId;
 
-    @Column(name="name",length = 255)
     private String name;
 
-    @Column(name="email",length = 255)
+    @Column(unique = true)
     private String email;
 
     @Column(name="phoneNo",length = 20)
     private String phoneNo;
 
-    @Column(name="address",length = 255)
     private String address;
 
-    @Column(name="password",length = 255)
     private String password;
 
 }

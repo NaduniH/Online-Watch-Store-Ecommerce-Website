@@ -1,6 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/customer/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      if (response.data) {
+        alert("Login successful!");
+        navigate("/home"); // Redirect to the homepage
+      } else {
+        alert("Login faild!");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert("Incorrect password. Please try again.");
+      } else if (error.response && error.response.status === 404) {
+        alert(
+          "You are not a registered customer. Please register and login to place your order."
+        );
+        navigate("/register");
+      } else {
+        alert("An error occurred. Please try again later.");
+        console.error("Error:", error);
+      }
+    }
+  };
+
   return (
     <section className="min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
@@ -11,7 +50,7 @@ function LoginPage() {
           <p className="text-sm text-center text-gray-500 mb-6">
             Sign in to continue to your account
           </p>
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="email"
@@ -25,6 +64,8 @@ function LoginPage() {
                 name="email"
                 placeholder="name@company.com"
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm px-4 py-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -41,16 +82,10 @@ function LoginPage() {
                 name="password"
                 placeholder="••••••••"
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm px-4 py-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div>
-            <div className="flex items-center justify-between">
-              <a
-                href="/forgotPassword"
-                className="text-sm font-medium text-indigo-600 hover:underline"
-              >
-                Forgot password?
-              </a>
             </div>
             <button
               type="submit"

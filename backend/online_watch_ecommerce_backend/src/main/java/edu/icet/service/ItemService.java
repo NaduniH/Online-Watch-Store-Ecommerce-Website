@@ -12,4 +12,6 @@ public interface ItemService {
     void UpdateItem(Item item);
 
     void deleteItem(Integer id);
+
+    Item findByItemCode(String itemCode);
 }

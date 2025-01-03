@@ -1,6 +1,5 @@
 package edu.icet.controller;
 
-import edu.icet.dto.Customer;
 import edu.icet.dto.Item;
 import edu.icet.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +35,12 @@ public class ItemController {
     public ResponseEntity<List<Item>> getAllItems() {
         try {
             List<Item> items = itemService.getAllItems();
-            return ResponseEntity.ok(items); // Return the list of items
+            return ResponseEntity.ok(items);
         } catch (Exception e) {
 
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null); // Or return an appropriate error message
+                    .body(null);
         }
     }
     @PutMapping("/updateItem")
@@ -49,9 +48,22 @@ public class ItemController {
         itemService.UpdateItem(item);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteItem/{id}")
     public void deleteItem(@PathVariable Integer id) {
         itemService.deleteItem(id);
+    }
+
+    @GetMapping("/findByItemCode")
+    public ResponseEntity<Item> findByItemCode(@RequestParam String itemCode) {
+        try {
+            Item item = itemService.findByItemCode(itemCode);
+            return ResponseEntity.ok(item);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
 }

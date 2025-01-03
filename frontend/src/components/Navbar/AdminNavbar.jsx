@@ -5,9 +5,9 @@ function AdminNavbar() {
   return (
     <nav className="bg-black">
       <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
-        {/* Logo Section */}
+       
         <Link
-          to="/"
+          to="/admin"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img
@@ -30,6 +30,11 @@ function AdminNavbar() {
           <li>
             <Link to="/manageItems" className="hover:underline">
               Manage Items
+            </Link>
+          </li>
+          <li>
+            <Link to="/manageCustomer" className="hover:underline">
+              Manage Customer
             </Link>
           </li>
           <li>

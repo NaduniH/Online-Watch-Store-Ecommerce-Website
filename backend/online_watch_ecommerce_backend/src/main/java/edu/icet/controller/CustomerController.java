@@ -1,12 +1,14 @@
 package edu.icet.controller;
 
 import edu.icet.dto.Customer;
-import edu.icet.dto.Item;
 import edu.icet.service.CustomerService;
-import edu.icet.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+import java.util.Optional;
+
 
 @RestController
 @CrossOrigin
@@ -16,17 +18,35 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addItem (@RequestBody Customer customer){
-        try {
+    @PostMapping("/addCustomer")
+    public void addCustomer (@RequestBody Customer customer){
+        customerService.addCustomer(customer);
+    }
 
-            customerService.addCustomer(customer);
-            return ResponseEntity.ok("Customer added successfully");
-        } catch (Exception e) {
+    @GetMapping("/getAllCustomer")
+    public List<Customer> getAllCustomers(){
+        return customerService.getAllCustomers();
+    }
 
-            e.printStackTrace();
+    @PutMapping("/updateCustomer")
+    public void UpdateCustomer (@RequestBody Customer customer){
+        customerService.UpdateCustomer(customer);
+    }
 
-            return ResponseEntity.badRequest().body("Error adding Customer: " + e.getMessage());
+    @DeleteMapping("/deleteCustomer/{id}")
+    public void deleteCustomer(@PathVariable Integer id) {
+        customerService.deleteCustomer(id);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Customer loginRequest) {
+        Optional<Customer> customer = customerService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        if (customer.isPresent()) {
+            return ResponseEntity.status(200).body("Login Successful");
+        } else {
+            return ResponseEntity.status(404).body("You are not a registered customer. Please register and login to place your order.");
         }
     }
+
+
 }

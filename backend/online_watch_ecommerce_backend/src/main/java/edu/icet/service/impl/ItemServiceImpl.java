@@ -2,10 +2,8 @@ package edu.icet.service.impl;
 
 import edu.icet.dto.Item;
 import edu.icet.dto.ItemDetail;
-import edu.icet.entity.CustomerEntity;
 import edu.icet.entity.ListedItem;
 import edu.icet.entity.ListedItemDetail;
-import edu.icet.repository.ItemDetailRepository;
 import edu.icet.repository.ItemRepository;
 import edu.icet.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -54,13 +52,22 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void UpdateItem(Item item) {
         itemRepository.save(mapper.map(item, ListedItem.class));
-
-
     }
 
     @Override
     public void deleteItem(Integer id) {
         itemRepository.deleteById(id);
+    }
+
+    @Override
+    public Item findByItemCode(String itemCode) {
+        ListedItem listedItem = itemRepository.findByItemCode(itemCode);
+        if(listedItem !=  null){
+            Item item = mapper.map(listedItem, Item.class);
+            return item;
+        }else{
+            return null;
+        }
 
     }
 

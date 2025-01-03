@@ -18,6 +18,7 @@ import PaymentPage from "./pages/PaymentPage.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ManageItemsPage from "./pages/ManageItems.jsx";
 import ViewOrdersPage from "./pages/ViewOrders.jsx";
+import ManageCustomerPage from "./pages/ManageCustomer.jsx";
 
 function AppLayout({ children }) {
   const location = useLocation();
@@ -51,6 +52,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/manageItems" element={<ManageItemsPage />} />
           <Route path="/viewOrders" element={<ViewOrdersPage />} />
+          <Route path="/manageCustomer" element={<ManageCustomerPage />} />
 
           
         </Routes>

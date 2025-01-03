@@ -2,8 +2,6 @@ package edu.icet.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-
 import java.util.Date;
 
 @Data

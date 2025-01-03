@@ -1,14 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function ManageItemsPage() {
-  
-
   const [form, setForm] = useState({
     itemCode: "",
     itemName: "",
     price: "",
+    quantity: "",
     category: "",
+    imageUrl: "",
+    description: "",
   });
+
+  const [items, setItems] = useState([]); // State to store table data
+
+  // Fetch data from the backend
+  useEffect(() => {
+    fetch("http://localhost:8080/item/getAllItems") // Replace with your API endpoint
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched data:", data); // Log the fetched data
+        setItems(data);
+      })
+      .catch((error) => console.error("Error fetching items:", error));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,56 +32,75 @@ function ManageItemsPage() {
     });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const filePath = file.name; // Get the file name
+      setForm({
+        ...form,
+        imageUrl: filePath,
+      });
+    }
+  };
+
   const validateForm = () => {
     let isValid = true;
+    // Add any required validation logic here
     return isValid;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Ensure form validation passes before sending the request
     if (validateForm()) {
-      // Create the product object matching the backend structure
-      const item = {
+      const newItem = {
         itemCode: form.itemCode,
+        quantity: form.quantity,
         itemCategory: form.category,
-        inStock: true, // Hardcoded, can be replaced with form input if needed
-        isVisible: true, // Hardcoded, can be replaced with form input if needed
-        quantity: "100",
-        entUser: "admin", // Hardcoded, can be replaced with logged-in user
-        entDate: new Date().toISOString(), // Auto-generate current date
+        inStock: true,
+        isVisible: true,
+        entUser: "admin",
+        entDate: new Date().toISOString(),
+
         itemDetail: {
-          itemName: form.itemName, // Assuming `itemName` is a state variable for item name
-          itemPrice: form.price, // Assuming `price` is a state variable for item price
-          itemDescription: "description", // Assuming `description` is a state variable
-          itemImgUrl: "imageUrl",
+          itemName: form.itemName,
+          itemPrice: form.price,
+          itemImgUrl: form.imageUrl,
+          itemDescription: form.description,
         },
       };
 
-      // Send the POST request to the backend
+      // Send the data to the backend
       fetch("http://localhost:8080/item/addItem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item),
+        body: JSON.stringify(newItem),
       })
         .then((response) => {
           if (response.ok) {
-            alert("Product Successfully Added!");
-            // Clear form fields and reset state
-            // setItemCode("");
-            // setItemCategory("");
-            // setQuantity("");
-            // setImageUrl("");
-            // setPrice("");
-            // setDescription("");
-            // setErrors({});
+            console.log("New Item:", newItem);
+            alert("Item added successfully!");
+
+            // Add the new item to the table
+            //setItems((prevItems) => [...prevItems, newItem]);
+
+            // Reset the form fields
+            setForm({
+              itemCode: "",
+              itemName: "",
+              price: "",
+              quantity: "",
+              category: "",
+              imageUrl: "",
+              description: "",
+            });
           } else {
-            alert("Failed to add product. Please try again.");
+            alert("Failed to add item. Please try again.");
           }
         })
         .catch((error) => {
-          alert("Error: " + error.message);
+          console.error("Error adding item:", error);
+          alert("Error: Unable to add item.");
         });
     }
   };
@@ -84,7 +117,7 @@ function ManageItemsPage() {
         onSubmit={handleSubmit}
         className="space-y-4 flex flex-col items-center"
       >
-        <div className="grid grid-cols-2 gap-4 w-1/2">
+        <div className="grid grid-cols-2 gap-10 w-4/5">
           {/* Item Code */}
           <div className="flex flex-col items-center">
             <label
@@ -142,6 +175,25 @@ function ManageItemsPage() {
             />
           </div>
 
+          {/* Quantity */}
+          <div className="flex flex-col items-center">
+            <label
+              htmlFor="quantity"
+              className="block text-lg font-medium text-gray-700"
+            >
+              Quantity
+            </label>
+            <input
+              type="text"
+              id="quantity"
+              name="quantity"
+              value={form.quantity}
+              onChange={handleChange}
+              className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
+              required
+            />
+          </div>
+
           {/* Categories */}
           <div className="flex flex-col items-center">
             <label
@@ -161,19 +213,69 @@ function ManageItemsPage() {
               <option value="" disabled>
                 Select a category
               </option>
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
+              <option value="MEN">Men</option>
+              <option value="WOMEN">Women</option>
             </select>
+          </div>
+
+          {/* Image URL */}
+          <div className="flex flex-col items-center">
+            <label
+              htmlFor="imageFile"
+              className="block text-lg font-medium text-gray-700"
+            >
+              Select Image URL
+            </label>
+            <input
+              type="file"
+              id="imageFile"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
+              required
+            />
+          </div>
+
+          {/* Description */}
+          <div className="flex flex-col items-center col-span-3">
+            <label
+              htmlFor="description"
+              className="block text-lg font-medium text-gray-700"
+            >
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-2"
+              rows="4"
+              required
+            ></textarea>
           </div>
         </div>
 
         {/* Add Button */}
-        <div className="flex justify-end w-1/2">
+        <div className="flex justify-end w-4/5 gap-4">
           <button
             type="submit"
             className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-700"
           >
             Add
+          </button>
+
+          <button
+            type="submit"
+            className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-700"
+          >
+            Update
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-700"
+          >
+            Delete
           </button>
         </div>
       </form>
@@ -190,34 +292,30 @@ function ManageItemsPage() {
             </th>
             <th className="px-6 py-3 text-left text-lg font-medium">Price</th>
             <th className="px-6 py-3 text-left text-lg font-medium">
-              Categories
+              Quantity
             </th>
-            <th className="px-6 py-3"></th>
-            <th className="px-6 py-3"></th>
+            <th className="px-6 py-3 text-left text-lg font-medium">
+              Category
+            </th>
+            <th className="px-6 py-3 text-left text-lg font-medium">
+              Description
+            </th>
           </tr>
         </thead>
         <tbody className="bg-white">
-          {/* {items.map((item, index) => (
+          {items.map((item, index) => (
             <tr
               key={index}
               className="border-t border-gray-300 hover:bg-gray-100"
             >
-              <td className="px-6 py-4">{item.item_id}</td>
-              <td className="px-6 py-4">{item.item_name}</td>
-              <td className="px-6 py-4">{item.price}</td>
-              <td className="px-6 py-4">{item.category}</td>
-              <td className="px-6 py-4">
-                <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-700">
-                  Update
-                </button>
-              </td>
-              <td className="px-6 py-4">
-                <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700">
-                  Delete
-                </button>
-              </td>
+              <td className="px-6 py-4">{item.itemCode}</td>
+              <td className="px-6 py-4">{item.itemDetail.itemName}</td>
+              <td className="px-6 py-4">{item.itemDetail.itemPrice}</td>
+              <td className="px-6 py-4">{item.quantity}</td>
+              <td className="px-6 py-4">{item.itemCategory}</td>
+              <td className="px-6 py-4">{item.itemDetail.itemDescription}</td>
             </tr>
-          ))} */}
+          ))}
         </tbody>
       </table>
     </div>
